@@ -1,7 +1,8 @@
-import requests, json, ffmpeg, music_tag, os
+import requests, json, ffmpeg, music_tag, os, os.path
 from yt_dlp import YoutubeDL
+from pathlib import Path
 
-client_token = "" #--add your genuis token
+client_token = "7lLnl6LW1YuubFxmvwCOI3kwQS8ku4BpRrQZjpODIm4-JGY3guVKfqnExxAUqVwX"
 
 DataTitle = ''
 DataArtist = ''
@@ -14,6 +15,9 @@ def clear():
 while True:
     InputTitle = input('enter the song title:\n')
     InputArtist = input('enter the song artist:\n')
+
+    if os.path.isfile('Temp/temp_song.mp4'):
+        os.remove('Temp/temp_song.mp4')
 
     #--Song Data stuffs
     search = InputTitle + ' ' +InputArtist
@@ -56,7 +60,7 @@ while True:
     #-- convert to mp3
     print('converting files to mp3!')
     stream = ffmpeg.input(f'Temp/temp_song.mp4')
-    stream = ffmpeg.output(stream, f'Music/{DataTitle}.mp3', loglevel="quiet")
+    stream = ffmpeg.output(stream, f'{Path.home()}/Music/{DataTitle}.mp3', loglevel="quiet")
     ffmpeg.run(stream)
 
 
@@ -68,7 +72,7 @@ while True:
     fileData = fileTmp.read()
     fileTmp.close()
 
-    f = music_tag.load_file(f'Music/{DataTitle}.mp3')
+    f = music_tag.load_file(f'{Path.home()}/Music/{DataTitle}.mp3')
     f['artwork'] = fileData
     f['album artist'] = DataArtist
     f['title'] = DataTitle
